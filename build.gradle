@@ -13,14 +13,6 @@ group = project.maven_group
 sourceSets.main.java.srcDirs += 'java'
 sourceSets.main.resources.srcDirs += 'resources'
 
-//configurations {
-//	modIncludeImplementation
-//
-//	include.extendsFrom modIncludeImplementation
-//	modImplementation.extendsFrom modIncludeImplementation
-//}
-
-
 repositories {
 
 	maven { url "https://maven.fabricmc.net/" }
@@ -32,31 +24,23 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-//
+
 //	modIncludeImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-//	modApi("me.shedaniel.cloth:cloth-config:${project.cloth_version}") {
-//		exclude(group: "net.fabricmc.fabric-api")
-//	}
-//
+
 	implementation("me.shedaniel.cloth:basic-math:0.5.1") // Cloth Config's Packaging is strange
 
-//	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-
-	//New:
-//	modIncludeImplementation(fabricApi.module("fabric-api-base", project.fabric_api_version))
-//	modIncludeImplementation(fabricApi.module("fabric-rendering-fluids-v1", project.fabric_api_version))
-//	modIncludeImplementation(fabricApi.module("fabric-rendering-data-attachment-v1", project.fabric_api_version))
-//	modIncludeImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version))
-
+	//modApi("me.shedaniel.cloth:cloth-config:${project.cloth_version}") {
 	modImplementation ("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	// Modmenu
+	//modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 	modCompileOnly modRuntime("com.terraformersmc:modmenu:${project.modmenu_version}"),{
 		exclude(group: "net.fabricmc.fabric-api")
 	}
@@ -64,7 +48,6 @@ dependencies {
 
 
 }
-
 processResources {
 	inputs.property "version", project.version
 
@@ -82,8 +65,6 @@ processResources {
 //		exclude '**/fabric.mod.json'
 //	}
 //}
-
-
 
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
