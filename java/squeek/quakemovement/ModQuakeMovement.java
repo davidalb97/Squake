@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,6 +26,7 @@ public class ModQuakeMovement implements ModInitializer {
 		//Cause this class to be loaded so the config loads on startup
 	}
 
+	@Environment(EnvType.CLIENT)
 	public static void drawSpeedometer(MatrixStack matrixStack)
 	{
 		MinecraftClient mc = MinecraftClient.getInstance();
