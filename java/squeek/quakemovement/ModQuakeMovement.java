@@ -24,6 +24,7 @@ public class ModQuakeMovement implements ModInitializer {
 		//Cause this class to be loaded so the config loads on startup
 	}
 
+	@Environment(EnvType.CLIENT)
 	public static void drawSpeedometer(MatrixStack matrixStack)
 	{
 		MinecraftClient mc = MinecraftClient.getInstance();
