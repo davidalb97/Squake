@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -13,39 +13,77 @@ group = project.maven_group
 sourceSets.main.java.srcDirs += 'java'
 sourceSets.main.resources.srcDirs += 'resources'
 
+//configurations {
+//	modIncludeImplementation
+//
+//	include.extendsFrom modIncludeImplementation
+//	modImplementation.extendsFrom modIncludeImplementation
+//}
+
+
 repositories {
+
+	maven { url "https://maven.fabricmc.net/" }
+	maven { url "https://maven.shedaniel.me/" }
 	maven {
 		name = "ModMenu"
 		url = "https://maven.terraformersmc.com/releases/"
 	}
-	maven { url "https://maven.shedaniel.me/" }
+	mavenCentral()
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
-
+//
+//	modIncludeImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modApi("me.shedaniel.cloth:cloth-config:${project.cloth_version}:fabric") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
+//	modApi("me.shedaniel.cloth:cloth-config:${project.cloth_version}") {
+//		exclude(group: "net.fabricmc.fabric-api")
+//	}
+//
 	implementation("me.shedaniel.cloth:basic-math:0.5.1") // Cloth Config's Packaging is strange
 
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+//	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	//New:
+//	modIncludeImplementation(fabricApi.module("fabric-api-base", project.fabric_api_version))
+//	modIncludeImplementation(fabricApi.module("fabric-rendering-fluids-v1", project.fabric_api_version))
+//	modIncludeImplementation(fabricApi.module("fabric-rendering-data-attachment-v1", project.fabric_api_version))
+//	modIncludeImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version))
+
+	modImplementation ("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	// Modmenu
+	modCompileOnly modRuntime("com.terraformersmc:modmenu:${project.modmenu_version}"),{
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+
+
 }
 
 processResources {
-	inputs.property "vars", project.version
-	from(sourceSets.main.resources.srcDirs) {
-		include '**/fabric.mod.json'
-		expand 'version':project.version
-	}
-	from(sourceSets.main.resources.srcDirs) {
-		exclude '**/fabric.mod.json'
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
 	}
 }
+//processResources {
+//	inputs.property "vars", project.version
+//	from(sourceSets.main.resources.srcDirs) {
+//		include '**/fabric.mod.json'
+//		expand 'version':project.version
+//	}
+//	from(sourceSets.main.resources.srcDirs) {
+//		exclude '**/fabric.mod.json'
+//	}
+//}
+
+
 
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"

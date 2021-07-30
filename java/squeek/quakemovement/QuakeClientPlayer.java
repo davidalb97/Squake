@@ -16,12 +16,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class QuakeClientPlayer
 {
@@ -43,7 +42,7 @@ public class QuakeClientPlayer
 		double d1 = player.getY();
 		double d2 = player.getZ();
 
-		if ((player.abilities.flying || player.isFallFlying()) && !player.hasVehicle())
+		if ((player.getAbilities().flying || player.isFallFlying()) && !player.hasVehicle())
 			return false;
 		else
 			didQuakeMovement = quake_travel(player, movementInput);
@@ -81,7 +80,7 @@ public class QuakeClientPlayer
 		if (!ModQuakeMovement.CONFIG.isEnabled())
 			return false;
 
-		if ((player.abilities.flying && !player.hasVehicle()) || player.isTouchingWater() || player.isInLava() || !player.abilities.flying)
+		if ((player.getAbilities().flying && !player.hasVehicle()) || player.isTouchingWater() || player.isInLava() || !player.getAbilities().flying)
 		{
 			return false;
 		}
@@ -107,7 +106,7 @@ public class QuakeClientPlayer
 		// undo this dumb thing
 		if (player.isSprinting())
 		{
-			float f = player.yaw * 0.017453292F;
+			float f = player.getYaw() * 0.017453292F;
 			Vec3d deltaVelocity = new Vec3d(MathHelper.sin(f) * 0.2F, 0, -(MathHelper.cos(f) * 0.2F));
 			player.setVelocity(player.getVelocity().add(deltaVelocity));
 		}
@@ -123,7 +122,7 @@ public class QuakeClientPlayer
 	private static double getSpeed(PlayerEntity player)
 	{
 		Vec3d velocity = player.getVelocity();
-		return MathHelper.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+		return MathHelper.sqrt((float) (velocity.getX() * velocity.getX() + velocity.getZ() * velocity.getZ()));
 	}
 
 	private static float getSurfaceFriction(PlayerEntity player)
@@ -169,7 +168,7 @@ public class QuakeClientPlayer
 
 		if (f3 >= 1.0E-4F)
 		{
-			f3 = MathHelper.sqrt(f3);
+			f3 = MathHelper.sqrt((float) f3);
 
 			if (f3 < 1.0F)
 			{
@@ -179,8 +178,8 @@ public class QuakeClientPlayer
 			f3 = 1.0F / f3;
 			sidemove *= f3;
 			forwardmove *= f3;
-			double f4 = MathHelper.sin(player.yaw * (float) Math.PI / 180.0F);
-			double f5 = MathHelper.cos(player.yaw * (float) Math.PI / 180.0F);
+			double f4 = MathHelper.sin(player.getYaw() * (float) Math.PI / 180.0F);
+			double f5 = MathHelper.cos(player.getYaw() * (float) Math.PI / 180.0F);
 			dir[0] = (sidemove * f5 - forwardmove * f4);
 			dir[1] = (forwardmove * f5 + sidemove * f4);
 		}
@@ -297,7 +296,7 @@ public class QuakeClientPlayer
 		player.lastLimbDistance = player.limbDistance;
 		double d0 = player.getX() - player.prevX;
 		double d1 = player.getZ() - player.prevZ;
-		float f6 = MathHelper.sqrt(d0 * d0 + d1 * d1) * 4.0F;
+		float f6 = MathHelper.sqrt((float) (d0 * d0 + d1 * d1)) * 4.0F;
 
 		if (f6 > 1.0F)
 		{
@@ -346,11 +345,11 @@ public class QuakeClientPlayer
 			return false;
 		}
 		// take care of lava movement using default code
-		else if ((player.isInLava() && !player.abilities.flying))
+		else if ((player.isInLava() && !player.getAbilities().flying))
 		{
 			return false;
 		}
-		else if (player.isTouchingWater() && !player.abilities.flying)
+		else if (player.isTouchingWater() && !player.getAbilities().flying)
 		{
 			if (ModQuakeMovement.CONFIG.isSharkingEnabled())
 				quake_WaterMove(player, (float) movementInput.x, (float) movementInput.y, (float) movementInput.z);

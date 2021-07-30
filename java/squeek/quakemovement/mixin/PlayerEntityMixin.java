@@ -1,11 +1,13 @@
 package squeek.quakemovement.mixin;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -66,12 +68,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements IsJumpin
 	boolean velocityHack = false;
 
 	@Inject(at = @At("HEAD"), method = "handleFallDamage")
-	private void preHandleFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> info) {
+	private void preHandleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> info) {
 		velocityHack = velocityModified;
 	}
-	
+
 	@Inject(at = @At("RETURN"), method = "handleFallDamage")
-	private void postHandleFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> info) {
+	private void postHandleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> info) {
 		if (!world.isClient) velocityModified = velocityHack;
 	}
 }

@@ -1,9 +1,9 @@
 package squeek.quakemovement;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,7 +30,7 @@ public class ModQuakeMovement implements ModInitializer {
 		PlayerEntity player = mc.player;
 		double deltaX = player.getX() - player.prevX;
 		double deltaZ = player.getZ() - player.prevZ;
-		double speed = MathHelper.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+		double speed = MathHelper.sqrt((float) (deltaX * deltaX + deltaZ * deltaZ));
 		String speedString = String.format("%.02f", speed);
 		int x;
 		int y;
@@ -44,8 +44,10 @@ public class ModQuakeMovement implements ModInitializer {
 		} else {
 			y = mc.getWindow().getScaledHeight() - mc.textRenderer.fontHeight - 10;
 		}
-		GlStateManager.pushMatrix();
+//		GL11.glPushMatrix();
+		matrixStack.push();
 		mc.textRenderer.drawWithShadow(matrixStack, speedString, x, y, 0xFFDDDDDD);
-		GlStateManager.popMatrix();
+		matrixStack.pop();
+//		GL11.glPopMatrix();
 	}
 }
